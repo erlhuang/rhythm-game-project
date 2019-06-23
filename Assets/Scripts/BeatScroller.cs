@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.Timers;
 
 public class BeatScroller : MonoBehaviour
 {
@@ -10,11 +8,14 @@ public class BeatScroller : MonoBehaviour
 
     public bool hasStarted;
     public GameObject[] beatsHolder;
-    private static System.Timers.Timer aTimer;
-
     // Start is called before the first frame update
     void Start()
     {
+        //hard coded for now, will add more precise stuff later 
+        for (int i = 0; i < 7; i++)
+        {
+            beatsHolder[i].SetActive(true);
+        }
         beatTempo = beatTempo / 60f;
     }
 
@@ -30,8 +31,9 @@ public class BeatScroller : MonoBehaviour
         }
         else
         {
-            aTimer = new System.Timers.Timer(2000);
             transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
         }
     }
+
+
 }
