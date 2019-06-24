@@ -28,19 +28,19 @@ public class NoteObject : MonoBehaviour
                 // GameManager.instance.NoteHit();
                 if(Mathf.Abs(transform.position.y) > 0.25)
                 {
-                    Debug.Log("Normal hit");
+                    //Debug.Log("Normal hit");
                     GameManager.instance.NormalHit();
                     Instantiate(hitEffect, transform.position, hitEffect.transform.rotation);
                 }
                 else if(Mathf.Abs(transform.position.y) > 0.08f)
                 {
-                    Debug.Log("Good hit");
+                    //Debug.Log("Good hit");
                     GameManager.instance.GoodHit();
                     Instantiate(goodEffect, transform.position, goodEffect.transform.rotation);
                 }
                 else
                 {
-                    Debug.Log("Perfect hit!");
+                    //Debug.Log("Perfect hit!");
                     GameManager.instance.PerfectHit();
                     Instantiate(perfectEffect, transform.position, perfectEffect.transform.rotation);
                 }
@@ -54,6 +54,10 @@ public class NoteObject : MonoBehaviour
         if(other.tag == "Activator")
         {
             canBePressed = true;
+            if(this.tag == "NewNoteStarter")
+            {
+                BeatScroller.beatScrollInstance.StartNewNotes(); 
+            }
         }
     }
 
