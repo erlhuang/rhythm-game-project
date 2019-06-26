@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EffectObject : MonoBehaviour
 {
-    public float lifetime = 0.75f; 
+    public float lifetime = 0.6f; 
     // Start is called before the first frame update
     void Start()
     {
