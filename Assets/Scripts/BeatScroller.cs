@@ -12,18 +12,21 @@ public class BeatScroller : MonoBehaviour
     public int lengthBeatInd;
     public static BeatScroller beatScrollInstance;
     private int noteTracker;
-
+    public bool debugMode;
+    //public float speedUp; 
     // Start is called before the first frame update
     void Start()
     {
         beatScrollInstance = this;
         //hard coded for now, will add more precise stuff later 
-        for (int i = 0; i < beatsHolder.Length; i++)
-        {
-            beatsHolder[i].SetActive(true);
+        if(debugMode != true) {
+            for (int i = 0; i < 45; i++)
+            {
+                beatsHolder[i].SetActive(true);
+            }
         }
         beatTempo = beatTempo / 60f;
-        noteTracker = 10;
+        noteTracker = 45;
         lengthBeatInd = 0;
     }
 
@@ -53,7 +56,20 @@ public class BeatScroller : MonoBehaviour
          lengthBeatInd++;
          */
         Debug.Log("Special note encountered");
+        for(int i = noteTracker; i < beatsHolder.Length; i++)
+        {
+            beatsHolder[i].SetActive(true);
+        }
+        noteTracker = noteTracker + lengthBeats[lengthBeatInd];
+        lengthBeatInd++;
     }
+
+    public void SkipStartTime()
+    {
+        transform.position -= new Vector3(0f, beatTempo * 42f, 0f);
+        StartNewNotes();
+    }
+   
 
 
 }

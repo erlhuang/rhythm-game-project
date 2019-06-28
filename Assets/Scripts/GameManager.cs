@@ -41,7 +41,9 @@ public class GameManager : MonoBehaviour
 
         scoreText.text = "0";
         currentMultiplier = 1;
-        totalNotes = FindObjectsOfType<NoteObject>().Length; 
+        totalNotes = FindObjectsOfType<NoteObject>().Length;
+        multiText.color = Color.red;
+        scoreText.color = Color.red;
     }
 
     // Update is called once per frame
@@ -53,7 +55,12 @@ public class GameManager : MonoBehaviour
             {
                 startPlaying = true;
                 theBS.hasStarted = true;
-
+                if (theBS.debugMode == true)
+                {
+                    Debug.Log("In debug mode!");
+                    theMusic.time = 42f;
+                    theBS.SkipStartTime();
+                }
                 theMusic.Play();
             }
         }
@@ -83,7 +90,7 @@ public class GameManager : MonoBehaviour
 
 
         if (currentMultiplier - 1 < multiplierThresholds.Length)
-        { //check to make sure we dont go over lenght of multipler array
+        { //check to make sure we dont go over lenghth of multipler array
             multiplierTracker++;
             if (multiplierThresholds[currentMultiplier - 1] <= multiplierTracker) // check to see if we need to move on to next multiplier 
             {
@@ -92,7 +99,8 @@ public class GameManager : MonoBehaviour
             }
  
         }
-        multiText.text = "x" + currentMultiplier; 
+        multiText.text = "x" + currentMultiplier;
+ 
     }
 
     public void NormalHit()
