@@ -11,10 +11,12 @@ public class NoteObject : MonoBehaviour
     public GameObject hitEffect, goodEffect, perfectEffect, missEffect;
 
     public AudioSource hitSound;
+
+
+    public static NoteObject noteInstance;  
     // Start is called before the first frame update
     void Start()
     {
-  
     }
 
     // Update is called once per frame
@@ -24,10 +26,26 @@ public class NoteObject : MonoBehaviour
         {
             if (canBePressed)
             {
+              
+                if(gameObject.tag == "StarPower")
+                {
+                    Debug.Log("Star Power encountered");
+                    GameManager.instance.starPower++;
+                }
+                else if(gameObject.tag == "StarPower2")
+                {
+                    Debug.Log("Encounted STARPOWER2");
+                    if (GameManager.instance.starPower == 1)
+                    {
+                        Debug.Log("Update meter");
+                        GameManager.instance.starPower = 0;
+                        GameManager.instance.starMeter++; 
+                        GameManager.instance.UpdateStar(GameManager.instance.starMeter);
+                    }
+                }
                 gameObject.SetActive(false);
-
                 // GameManager.instance.NoteHit();
-                if(Mathf.Abs(transform.position.y) > 0.25)
+                if (Mathf.Abs(transform.position.y) > 0.25)
                 {
                     //Debug.Log("Normal hit");
                     PlayHitSound();
@@ -72,6 +90,12 @@ public class NoteObject : MonoBehaviour
             canBePressed = false;
             Instantiate(missEffect, transform.position, missEffect.transform.rotation);
             GameManager.instance.NoteMissed();
+            gameObject.SetActive(false);
+            if(this.tag == "StarPower")
+            {
+                Debug.Log("Set star power false");
+                GameManager.instance.starPower = 0;
+            }
         }
     }
 

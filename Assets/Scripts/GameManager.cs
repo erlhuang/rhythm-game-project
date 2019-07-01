@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System; 
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,13 +27,16 @@ public class GameManager : MonoBehaviour
 
     public Text scoreText;
     public Text multiText;
-
+    public Text starText; 
     public float totalNotes;
     public float normalHits;
     public float goodHits;
     public float perfectHits;
     public float missedHits;
 
+    public int starPower; //records the notes in each star power section
+    public int starMeter; //our actual star meter 
+    public bool starOn; //true if star power is on 
     public GameObject resultsScreen;
     public Text percentHitText, normalsText, goodsText, perfectsText, missesText, rankText, finalScoreText; 
 
@@ -41,9 +47,11 @@ public class GameManager : MonoBehaviour
 
         scoreText.text = "0";
         currentMultiplier = 1;
+        starText.text = "STAR: 0";
         totalNotes = FindObjectsOfType<NoteObject>().Length;
         multiText.color = Color.red;
         scoreText.color = Color.red;
+        starText.color = Color.red;
     }
 
     // Update is called once per frame
@@ -58,7 +66,7 @@ public class GameManager : MonoBehaviour
                 if (theBS.debugMode == true)
                 {
                     Debug.Log("In debug mode!");
-                    theMusic.time = 42f;
+                    theMusic.time = 30f;
                     theBS.SkipStartTime();
                 }
                 theMusic.Play();
@@ -82,11 +90,21 @@ public class GameManager : MonoBehaviour
                 finalScoreText.text = currentScore.ToString();
             }
         }
+
+        if (Input.GetKeyDown("space"))
+        {
+            if(starMeter > 0)
+            {
+                Debug.Log("Activate Star power!");
+                StartCoroutine(ActivateStar(7*starMeter));
+            }
+            starMeter = 0;
+        }
     }
 
     public void NoteHit() //goes here whenever notes are hit succesfully
     {
-        Debug.Log("Hit on time");
+        //Debug.Log("Hit on time");
 
 
         if (currentMultiplier - 1 < multiplierThresholds.Length)
@@ -99,13 +117,27 @@ public class GameManager : MonoBehaviour
             }
  
         }
-        multiText.text = "x" + currentMultiplier;
+        if (starOn)
+        {
+            multiText.text = "x" + currentMultiplier * 2;
+        }
+        else
+        {
+            multiText.text = "x" + currentMultiplier;
+        }
  
     }
 
     public void NormalHit()
     {
-        currentScore += scorePerNote * currentMultiplier;
+        if (starOn)
+        {
+            currentScore += scorePerNote * currentMultiplier * 2;
+        }
+        else
+        {
+            currentScore += scorePerNote * currentMultiplier;
+        }
         scoreText.text = "" + currentScore; 
         NoteHit();
 
@@ -114,28 +146,67 @@ public class GameManager : MonoBehaviour
 
     public void GoodHit()
     {
-        currentScore += scorePerGoodNote * currentMultiplier;
+        if (starOn)
+        {
+            currentScore += scorePerGoodNote * currentMultiplier * 2;
+        }
+        else
+        {
+            currentScore += scorePerGoodNote * currentMultiplier;
+        }
         scoreText.text = "" + currentScore;
         NoteHit();
-
         goodHits++;
     }
 
     public void PerfectHit()
     {
-        currentScore += scorePerPerfectNote * currentMultiplier;
+        if (starOn)
+        {
+            currentScore += scorePerPerfectNote * currentMultiplier * 2;
+        }
+        else
+        {
+            currentScore += scorePerPerfectNote * currentMultiplier;
+        }
         scoreText.text = "" + currentScore;
         NoteHit();
-
         perfectHits++;
     }
+
     public void NoteMissed() //goes here whenever notes are missed 
     {
-        Debug.Log("Missed note");
+        //Debug.Log("Missed note");
         currentMultiplier = 1;
         multiplierTracker = 0;
         multiText.text = "x" + currentMultiplier;
 
         missedHits++;
     } 
+
+    public void UpdateStar(int starLength)
+    {
+        starText.text = "STAR: " + starLength;
+    }
+
+    IEnumerator ActivateStar(int halt)
+    {
+        starOn = true;
+        multiText.color = Color.blue;
+        scoreText.color = Color.blue;
+        starText.color = Color.blue;
+        starText.text = "STAR: ON";
+        multiText.text = "x" + currentMultiplier*2;
+        yield return new WaitForSeconds(halt);
+        starOn = false;
+        starText.text = "STAR: 0";
+        multiText.color = Color.red;
+        scoreText.color = Color.red;
+        starText.color = Color.red;
+    }
+
+
+
+
+
 }
