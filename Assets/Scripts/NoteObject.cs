@@ -41,6 +41,7 @@ public class NoteObject : MonoBehaviour
                         GameManager.instance.starPower = 0;
                         GameManager.instance.starMeter++; 
                         GameManager.instance.UpdateStar(GameManager.instance.starMeter);
+                        GameManager.instance.gotStar.Play(); 
                     }
                 }
                 gameObject.SetActive(false);
@@ -48,21 +49,21 @@ public class NoteObject : MonoBehaviour
                 if (Mathf.Abs(transform.position.y) > 0.25)
                 {
                     //Debug.Log("Normal hit");
-                    PlayHitSound();
+                    hitSound.Play();
                     GameManager.instance.NormalHit();
                     Instantiate(hitEffect, transform.position, hitEffect.transform.rotation);
                 }
                 else if(Mathf.Abs(transform.position.y) > 0.11f)
                 {
                     //Debug.Log("Good hit");
-                    PlayHitSound();
+                    hitSound.Play();
                     GameManager.instance.GoodHit();
                     Instantiate(goodEffect, transform.position, goodEffect.transform.rotation);
                 }
                 else
                 {
                     //Debug.Log("Perfect hit!");
-                    PlayHitSound();
+                    hitSound.Play();
                     GameManager.instance.PerfectHit();
                     Instantiate(perfectEffect, transform.position, perfectEffect.transform.rotation);
                 }
@@ -103,4 +104,5 @@ public class NoteObject : MonoBehaviour
     {
         hitSound.Play();
     }
+
 }

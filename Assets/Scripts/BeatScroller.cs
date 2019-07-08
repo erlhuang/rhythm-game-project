@@ -13,6 +13,7 @@ public class BeatScroller : MonoBehaviour
     public static BeatScroller beatScrollInstance;
     private int noteTracker;
     public bool debugMode;
+    public bool keepScrolling;
     //public float speedUp; 
     // Start is called before the first frame update
     void Start()
@@ -42,7 +43,10 @@ public class BeatScroller : MonoBehaviour
         }
         else
         {
-            transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
+            if (keepScrolling == true)
+            {
+                transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
+            }
         }
     }
 
@@ -62,6 +66,4 @@ public class BeatScroller : MonoBehaviour
         StartNewNotes();
     }
    
-
-
 }
