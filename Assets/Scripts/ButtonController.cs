@@ -7,16 +7,16 @@ public class ButtonController : MonoBehaviour
     private SpriteRenderer theSR;
     public Sprite defaultImg;
     public Sprite pressedImg;
-
+    //public GameObject specialEffect; 
     public KeyCode keyToPress;
+    //public static ButtonController bcInstance;
 
-    // Start is called before the first frame update
     void Start()
     {
+      //  bcInstance = this;
         theSR = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(keyToPress))
@@ -28,5 +28,11 @@ public class ButtonController : MonoBehaviour
         {
             theSR.sprite = defaultImg;
         }
+
     }
+
+    /*public void playEffect()
+    {
+        Instantiate(specialEffect, transform.position, specialEffect.transform.rotation);
+    } */
 }

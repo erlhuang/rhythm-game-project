@@ -12,7 +12,6 @@ public class NoteObject : MonoBehaviour
 
     public AudioSource hitSound;
 
-
     public static NoteObject noteInstance;  
     // Start is called before the first frame update
     void Start()
@@ -24,12 +23,11 @@ public class NoteObject : MonoBehaviour
     {
         if (Input.GetKeyDown(keyToPress))
         {
-            if (canBePressed)
+            if (canBePressed) //Basically means we hit key on time!
             {
-              
+               // ButtonController.bcInstance.playEffect();
                 if(gameObject.tag == "StarPower")
                 {
-                    Debug.Log("Star Power encountered");
                     GameManager.instance.starPower++;
                 }
                 else if(gameObject.tag == "StarPower2")
@@ -37,32 +35,28 @@ public class NoteObject : MonoBehaviour
                     Debug.Log("Encounted STARPOWER2");
                     if (GameManager.instance.starPower == 1)
                     {
-                        Debug.Log("Update meter");
                         GameManager.instance.starPower = 0;
                         GameManager.instance.starMeter++; 
                         GameManager.instance.UpdateStar(GameManager.instance.starMeter);
-                        GameManager.instance.gotStar.Play(); 
+                        GameManager.instance.gotStar.Play(); //Only increment star power meter if we hit all special star notes! 
                     }
                 }
                 gameObject.SetActive(false);
-                // GameManager.instance.NoteHit();
                 if (Mathf.Abs(transform.position.y) > 0.25)
                 {
-                    //Debug.Log("Normal hit");
                     hitSound.Play();
                     GameManager.instance.NormalHit();
                     Instantiate(hitEffect, transform.position, hitEffect.transform.rotation);
                 }
                 else if(Mathf.Abs(transform.position.y) > 0.11f)
                 {
-                    //Debug.Log("Good hit");
                     hitSound.Play();
                     GameManager.instance.GoodHit();
                     Instantiate(goodEffect, transform.position, goodEffect.transform.rotation);
                 }
-                else
+                else 
                 {
-                    //Debug.Log("Perfect hit!");
+
                     hitSound.Play();
                     GameManager.instance.PerfectHit();
                     Instantiate(perfectEffect, transform.position, perfectEffect.transform.rotation);
@@ -77,9 +71,10 @@ public class NoteObject : MonoBehaviour
         if(other.tag == "Activator")
         {
             canBePressed = true;
-            if(this.tag == "NewNoteStarter")
+            if (this.tag == "NewNoteStarter")
             {
-                BeatScroller.beatScrollInstance.StartNewNotes(); 
+                BeatScroller.beatScrollInstance.sections[GameManager.instance.sectionInd].SetActive(true);
+                GameManager.instance.sectionInd++;
             }
         }
     }

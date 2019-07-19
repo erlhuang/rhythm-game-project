@@ -20,53 +20,55 @@ public class GameManager : MonoBehaviour
     public int scorePerNote = 50;
     public int scorePerGoodNote = 100;
     public int scorePerPerfectNote = 300;
+    public int sectionInd;
 
     public int currentMultiplier;
     public int multiplierTracker;
     public int[] multiplierThresholds; 
     public int lifeMeter;
     public int totalCombo;
+    //Text related to HUD
+    public Text[] hudText; 
+    // 0 is scoretext, 1 multiText, 2 starText, 3 comboText, 4 lifeText
+    //public Text scoreText, multiText, starText, comboText, lifeText;
 
-    public Text scoreText;
-    public Text multiText;
-    public Text starText;
-    public Text comboText;
-    public Text lifeText;
     public float totalNotes;
     public float normalHits;
     public float goodHits;
     public float perfectHits;
     public float missedHits;
 
-    public int starPower; //records the notes in each star power section
-    public int starMeter; //our actual star meter 
+    public int starPower, starMeter; 
     public bool starOn; //true if star power is on 
     public GameObject resultsScreen;
     public Text percentHitText, normalsText, goodsText, perfectsText, missesText, rankText, finalScoreText;
+    public GameObject overScreen;
+    public Text overText;
 
     public AudioSource gotStar;
     public bool alreadyPressed;
+
     public bool gameOver;
 
-    // Start is called before the first frame update
+    // Initialize all values at start of song
     void Start()
     {
         instance = this;
 
-        scoreText.text = "0";
+        hudText[0].text = "0";
         currentMultiplier = 1;
-        starText.text = "STAR: 0";
-        comboText.text = "0";
+        hudText[2].text = "STAR: 0";
+        hudText[3].text = "0";
         totalNotes = FindObjectsOfType<NoteObject>().Length;
-        multiText.color = Color.red;
-        scoreText.color = Color.red;
-        starText.color = Color.red;
+        hudText[1].color = Color.white;
+        hudText[0].color = Color.white;
+        hudText[2].color = Color.white;
         alreadyPressed = false;
         lifeMeter = 10;
         totalCombo = 0;
+        sectionInd = 1;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!startPlaying)
@@ -74,12 +76,13 @@ public class GameManager : MonoBehaviour
             if (Input.anyKeyDown)
             {
                 startPlaying = true;
-                theBS.hasStarted = true;
+                theBS.songStarted = true;
                 theBS.keepScrolling = true;
                 if (theBS.debugMode == true)
                 {
+                    //if debug mode true we can skip our start time
                     Debug.Log("In debug mode!");
-                    theMusic.time = 30f;
+                    theMusic.time = theBS.skipTime;
                     theBS.SkipStartTime();
                 }
                 theMusic.Play();
@@ -98,20 +101,7 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Backspace)) //pause button 
         {
-            if(alreadyPressed == true)
-            {
-                theMusic.Play();
-                alreadyPressed = false;
-                theBS.keepScrolling = true;
-            }
-            else
-            {
-                theMusic.Pause();
-                pauseSound.Play();
-                alreadyPressed = true;
-                theBS.keepScrolling = false;
-            
-            }
+            PauseButtonPressed();
         }
 
         if (!theMusic.isPlaying && !resultsScreen.activeInHierarchy && startPlaying && !alreadyPressed && !gameOver) //results screen 
@@ -121,12 +111,9 @@ public class GameManager : MonoBehaviour
             goodsText.text = goodHits.ToString();
             perfectsText.text = perfectHits.ToString();
             missesText.text = missedHits.ToString();
-
-            float totalHit = (float)(normalHits * 0.16 + goodHits * 0.33 + perfectHits); //needs tweeking
+            float totalHit = (float)(normalHits * 0.5 + goodHits * 0.66 + perfectHits); 
             float percentHit = (totalHit / totalNotes) * 100f;
-
             percentHitText.text = percentHit.ToString("F1") + "%";
-
             finalScoreText.text = currentScore.ToString();
         }
     }
@@ -145,19 +132,19 @@ public class GameManager : MonoBehaviour
         }
         if (starOn)
         {
-            multiText.text = "x" + currentMultiplier * 2;
+            hudText[1].text = "x" + currentMultiplier * 2;
         }
         else
         {
-            multiText.text = "x" + currentMultiplier;
+            hudText[1].text = "x" + currentMultiplier;
         }
         totalCombo++;
-        comboText.text = "" + totalCombo;
+        hudText[3].text = "" + totalCombo;
         if(totalCombo % 10 == 0)
         {
             if(lifeMeter < 10) {
                 lifeMeter++;
-                lifeText.text = "HP: " + lifeMeter;
+                hudText[4].text = "HP: " + lifeMeter;
             }
         }
  
@@ -173,9 +160,8 @@ public class GameManager : MonoBehaviour
         {
             currentScore += scorePerNote * currentMultiplier;
         }
-        scoreText.text = "" + currentScore; 
+        hudText[0].text = "" + currentScore; 
         NoteHit();
-
         normalHits++;
     }
 
@@ -189,7 +175,7 @@ public class GameManager : MonoBehaviour
         {
             currentScore += scorePerGoodNote * currentMultiplier;
         }
-        scoreText.text = "" + currentScore;
+        hudText[0].text = "" + currentScore;
         NoteHit();
         goodHits++;
     }
@@ -204,7 +190,7 @@ public class GameManager : MonoBehaviour
         {
             currentScore += scorePerPerfectNote * currentMultiplier;
         }
-        scoreText.text = "" + currentScore;
+        hudText[0].text = "" + currentScore;
         NoteHit();
         perfectHits++;
     }
@@ -214,45 +200,65 @@ public class GameManager : MonoBehaviour
         //Debug.Log("Missed note");
         currentMultiplier = 1;
         multiplierTracker = 0;
-        multiText.text = "x" + currentMultiplier;
+        hudText[1].text = "x" + currentMultiplier;
         missedHits++;
         totalCombo = 0;
-        comboText.text = "" + totalCombo;
+        hudText[3].text = "" + totalCombo;
         lifeMeter--;
         if(lifeMeter <= 0)
         {
+            overScreen.SetActive(true);
+            overText.text = "GAME OVER";
             theBS.keepScrolling = false;
             gameOver = true;
             theMusic.Stop();
             Debug.Log("Game over!");
-            lifeText.text = "HP: 0";
+            hudText[4].text = "HP: 0";
         }
         else
         {
-            lifeText.text = "HP: " + lifeMeter;
+            hudText[4].text = "HP: " + lifeMeter;
         } 
     } 
 
+    public void PauseButtonPressed()
+    {
+        if (alreadyPressed == true) //already in pause so we should unpause
+        {
+            theMusic.Play();
+            alreadyPressed = false;
+            theBS.keepScrolling = true;
+        }
+        else
+        { //we must pause 
+            theMusic.Pause();
+            pauseSound.Play();
+            alreadyPressed = true;
+            theBS.keepScrolling = false;
+        }
+    }
+
     public void UpdateStar(int starLength)
     {
-        starText.text = "STAR: " + starLength;
+        hudText[2].text = "STAR: " + starLength;
     }
 
     IEnumerator ActivateStar(int halt)
     {
-        starOn = true;
-        multiText.color = Color.blue;
-        scoreText.color = Color.blue;
-        starText.color = Color.blue;
-        starText.text = "STAR: ON";
-        multiText.text = "x" + currentMultiplier*2;
-        yield return new WaitForSeconds(halt);
+        starOn = true; //Star meter turned on, 
+        for (int i = 0; i < hudText.Length; i++)
+        {
+            hudText[i].color = Color.blue;
+        }
+        hudText[2].text = "STAR: ON";
+        hudText[3].text = "x" + currentMultiplier*2;
+        yield return new WaitForSeconds(halt); //after star meter is done set everything back to normal 
         starOn = false;
-        starText.text = "STAR: 0";
-        multiText.color = Color.red;
-        scoreText.color = Color.red;
-        starText.color = Color.red;
+        hudText[2].text = "STAR: 0";
+        for(int i = 0; i < hudText.Length; i++)
+        {
+            hudText[i].color = Color.white;
+        }
     }
-
 
 }

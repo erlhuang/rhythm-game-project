@@ -4,66 +4,45 @@ using UnityEngine;
 
 public class BeatScroller : MonoBehaviour
 {
-    public float beatTempo;
+    public float songTempo;
 
-    public bool hasStarted;
-    public GameObject[] beatsHolder;
-    public int[] lengthBeats;
-    public int lengthBeatInd;
+    public bool songStarted;
     public static BeatScroller beatScrollInstance;
     private int noteTracker;
     public bool debugMode;
     public bool keepScrolling;
-    //public float speedUp; 
-    // Start is called before the first frame update
+    public GameObject[] sections; 
+    public float skipTime;
     void Start()
     {
         beatScrollInstance = this;
-        //hard coded for now, will add more precise stuff later 
-        //if(debugMode != true) {
-            for (int i = 0; i < 45; i++)
-            {
-                beatsHolder[i].SetActive(true);
-            }
-        //}
-        beatTempo = beatTempo / 60f;
-        noteTracker = 45;
-        lengthBeatInd = 0;
-    }
+        songTempo = songTempo / 60f;
 
-    // Update is called once per frame
+    }
     void Update()
     {
-        if (!hasStarted)
-        {
-            /*if (Input.anyKeyDown)
-            {
-                hasStarted = true;
-            } */
-        }
-        else
+        if(songStarted)
         {
             if (keepScrolling == true)
             {
-                transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
+                //physics causes notes to fall at constant speed in conjunction with our set BPM
+                transform.position -= new Vector3(0f, songTempo * Time.deltaTime, 0f);
             }
         }
-    }
-
-    public void StartNewNotes()
-    {
-        for (int i = noteTracker; i < noteTracker + lengthBeats[lengthBeatInd]; i++)
-        {
-            beatsHolder[i].SetActive(true);
-        }
-        noteTracker = noteTracker + lengthBeats[lengthBeatInd];
-        lengthBeatInd++;
     }
 
     public void SkipStartTime()
     {
-        transform.position -= new Vector3(0f, beatTempo * 30f, 0f);
-        StartNewNotes();
+        transform.position -= new Vector3(0f, songTempo * skipTime, 0f);
+        //section2.SetActive(true);
+        //section3.SetActive(true);
+        //section4.SetActive(true);
+        //sections[4].SetActive(true);
+        //sections[5].SetActive(true);
+        //sections[6].SetActive(true);
+        //sections[7].SetActive(true);
+        sections[8].SetActive(true);
+        sections[9].SetActive(true);
     }
    
 }
