@@ -28,9 +28,10 @@ public class GameManager : MonoBehaviour
     public int lifeMeter;
     public int totalCombo;
     //Text related to HUD
-    public Text[] hudText; 
+    public Text[] hudText;
     // 0 is scoretext, 1 multiText, 2 starText, 3 comboText, 4 lifeText
     //public Text scoreText, multiText, starText, comboText, lifeText;
+    public GameObject[] buttons;
 
     public float totalNotes;
     public float normalHits;
@@ -60,9 +61,10 @@ public class GameManager : MonoBehaviour
         hudText[2].text = "STAR: 0";
         hudText[3].text = "0";
         totalNotes = FindObjectsOfType<NoteObject>().Length;
-        hudText[1].color = Color.white;
-        hudText[0].color = Color.white;
-        hudText[2].color = Color.white;
+        for (int i = 0; i < 3; i++)
+        {
+            hudText[i].color = Color.white;
+        }
         alreadyPressed = false;
         lifeMeter = 10;
         totalCombo = 0;
@@ -71,7 +73,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (!startPlaying)
+        /* if (!startPlaying)
         {
             if (Input.anyKeyDown)
             {
@@ -87,7 +89,7 @@ public class GameManager : MonoBehaviour
                 }
                 theMusic.Play();
             }
-        }
+        } */
       
 
         if (Input.GetKeyDown("space")) //activate star power if we hit space 

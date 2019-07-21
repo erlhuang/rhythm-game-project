@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ButtonController : MonoBehaviour
 {
-    private SpriteRenderer theSR;
+    public SpriteRenderer theSR;
     public Sprite defaultImg;
     public Sprite pressedImg;
     //public GameObject specialEffect; 
