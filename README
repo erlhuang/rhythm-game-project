@@ -1,0 +1,14 @@
+Initially I had an idea of this game to be a mixture of DDR and Elite Beat
+Agents (having a plot aspect to the rhythm game) but realized I would be
+unable to complete the art for the miniplot. As it stands, this is simply a
+DDR clone I chose to make for fun.
+
+
+TODO:
+  - Sliders
+  - A lot of aesthetic improvements
+  - Improvements to how im implementing level design...
+
+CREDITS (will also be included in the game):
+gamesplusjames on YouTube for his Rhythm Game tutorial, essentially making up
+the base of this game
