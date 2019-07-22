@@ -32,7 +32,6 @@ public class NoteObject : MonoBehaviour
                 }
                 else if(gameObject.tag == "StarPower2")
                 {
-                    Debug.Log("Encounted STARPOWER2");
                     if (GameManager.instance.starPower == 1)
                     {
                         GameManager.instance.starPower = 0;
