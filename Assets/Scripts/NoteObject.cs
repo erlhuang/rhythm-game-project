@@ -8,10 +8,9 @@ public class NoteObject : MonoBehaviour
 
     public KeyCode keyToPress;
 
-    public GameObject hitEffect, goodEffect, perfectEffect, missEffect;
-
+    public GameObject hitEffect, goodEffect, perfectEffect, missEffect, specialEffect;
     public AudioSource hitSound;
-
+    private Animator anim;
     public static NoteObject noteInstance;  
     // Start is called before the first frame update
     void Start()
@@ -60,13 +59,24 @@ public class NoteObject : MonoBehaviour
                     GameManager.instance.PerfectHit();
                     Instantiate(perfectEffect, transform.position, perfectEffect.transform.rotation);
                 }
-
+                if (gameObject.tag == "StarPower")
+                {
+                    Instantiate(specialEffect, transform.position, specialEffect.transform.rotation);
+                }
             }
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if(gameObject.tag == "Animator")
+        {
+            anim = GetComponent<Animator>();
+            if(null != anim)
+            {
+                anim.Play("")
+            }
+        }
         if(other.tag == "Activator")
         {
             canBePressed = true;

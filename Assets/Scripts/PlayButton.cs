@@ -8,6 +8,7 @@ public class PlayButton : MonoBehaviour
 {
     public GameObject titleText;
     public GameObject theButton;
+    public GameObject backButton;
     public void OnPlayPressed()
     {
         if (!GameManager.instance.startPlaying)
@@ -36,5 +37,6 @@ public class PlayButton : MonoBehaviour
             GameManager.instance.hudText[i].color = Color.white;
         }
         titleText.SetActive(false);
+        backButton.SetActive(false);
     }
 }

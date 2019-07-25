@@ -23,7 +23,7 @@ public class FadeOut : MonoBehaviour
         }
     }
 
-    public void startFading()
+    public void StartFading()
     {
         StartCoroutine("FadingOut");
     }

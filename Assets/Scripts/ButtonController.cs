@@ -7,9 +7,7 @@ public class ButtonController : MonoBehaviour
     public SpriteRenderer theSR;
     public Sprite defaultImg;
     public Sprite pressedImg;
-    //public GameObject specialEffect; 
     public KeyCode keyToPress;
-    //public static ButtonController bcInstance;
 
     void Start()
     {
@@ -31,8 +29,4 @@ public class ButtonController : MonoBehaviour
 
     }
 
-    /*public void playEffect()
-    {
-        Instantiate(specialEffect, transform.position, specialEffect.transform.rotation);
-    } */
 }

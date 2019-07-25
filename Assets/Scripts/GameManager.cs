@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; 
 
 public class GameManager : MonoBehaviour
 {
@@ -28,7 +29,10 @@ public class GameManager : MonoBehaviour
     public int lifeMeter;
     public int totalCombo;
     //Text related to HUD
-    public Text[] hudText;
+    //public Text[] hudText; 
+    public TextMeshProUGUI[] hudText;
+    public TMP_ColorGradient starColor;
+    public TMP_ColorGradient defaultColor;
     // 0 is scoretext, 1 multiText, 2 starText, 3 comboText, 4 lifeText
     //public Text scoreText, multiText, starText, comboText, lifeText;
     public GameObject[] buttons;
@@ -247,19 +251,27 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ActivateStar(int halt)
     {
+        starMeter = 0;
         starOn = true; //Star meter turned on, 
         for (int i = 0; i < hudText.Length; i++)
         {
-            hudText[i].color = Color.blue;
+            hudText[i].colorGradientPreset = starColor;
         }
-        hudText[2].text = "STAR: ON";
+        //hudText[2].text = "STAR: ON";
         hudText[3].text = "x" + currentMultiplier*2;
         yield return new WaitForSeconds(halt); //after star meter is done set everything back to normal 
-        starOn = false;
-        hudText[2].text = "STAR: 0";
-        for(int i = 0; i < hudText.Length; i++)
+        if (starMeter > 0)
         {
-            hudText[i].color = Color.white;
+            StartCoroutine(ActivateStar(7 * starMeter));
+        }
+        else
+        {
+            starOn = false;
+            hudText[2].text = "STAR: " + starMeter;
+            for (int i = 0; i < hudText.Length; i++)
+            {
+                hudText[i].colorGradientPreset = defaultColor;
+            }
         }
     }
 
